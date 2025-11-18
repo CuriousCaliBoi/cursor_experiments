@@ -1,0 +1,29 @@
+# Core dependencies for cutting-edge hook experiments
+# Install with: pip install -r requirements.txt
+
+# AI/LLM
+openai>=1.0.0
+anthropic>=0.18.0
+langchain>=0.1.0
+
+# Web frameworks
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+flask>=3.0.0
+
+# Async
+asyncio>=3.4.3  # Built-in
+aiohttp>=3.9.0
+httpx>=0.25.0
+
+# System & OS
+watchdog>=3.0.0  # File system monitoring
+psutil>=5.9.0  # System and process utilities
+
+# Git automation
+GitPython>=3.1.40
+
+# Utilities
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+

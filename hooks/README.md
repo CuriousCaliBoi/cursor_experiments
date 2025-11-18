@@ -9,11 +9,12 @@ Cutting-edge experiments pushing the boundaries of hook applications across diff
 - **Prompt Chaining Hooks** - Advanced prompt composition and transformation patterns
 - **Streaming Response Hooks** - Real-time AI response handling with hooks
 
-### ⚛️ Advanced React Hooks
-- **State Machine Hooks** - XState integration with custom hooks
-- **Concurrent Rendering Hooks** - React 18+ concurrent features with hooks
-- **Micro-Frontend Hooks** - Module federation and component composition hooks
-- **WebSocket State Hooks** - Real-time state synchronization patterns
+### 🐍 Advanced Python Hooks
+- **Decorator Hook Patterns** - Advanced decorator composition and chaining
+- **Async/Await Hooks** - Async context managers and coroutine hooks
+- **FastAPI/Flask Middleware Hooks** - Request/response lifecycle hooks
+- **Signal & Event Hooks** - Event-driven patterns with Python signals
+- **Plugin System Hooks** - Dynamic plugin loading and hook registration
 
 ### 🔗 Webhook Orchestration
 - **Event-Driven Architecture Hooks** - Complex event processing pipelines
@@ -27,8 +28,8 @@ Cutting-edge experiments pushing the boundaries of hook applications across diff
 
 ### 🖥️ System-Level Hooks
 - **OS Event Hooks** - File system, process, and network monitoring hooks
-- **IPC Hooks** - Inter-process communication patterns
-- **Native Module Hooks** - Bridge between Node.js and native code
+- **IPC Hooks** - Inter-process communication patterns (multiprocessing, asyncio)
+- **Native Extension Hooks** - Cython and C extension integration hooks
 
 ## Philosophy
 
