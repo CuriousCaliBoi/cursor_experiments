@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "./hooks/audit-shell.sh"
+      },
+      {
+        "command": "./hooks/security-check.sh"
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "./hooks/log-execution.sh"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "./hooks/format-code.sh"
+      },
+      {
+        "command": "./hooks/check-secrets.sh"
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "./hooks/redact-secrets.sh"
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "./hooks/enhance-prompt.sh"
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "./hooks/analyze-response.sh"
+      }
+    ],
+    "stop": [
+      {
+        "command": "./hooks/finalize-session.sh"
+      }
+    ]
+  }
+}

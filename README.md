@@ -1,160 +1,207 @@
-# Cursor Experiments
+# Cursor Hooks Experiments
 
-Cutting-edge experiments pushing the boundaries of hook applications across different domains, built with Python.
+Experiments using [Cursor's hooks feature](https://cursor.com/docs/agent/hooks) to observe, control, and extend the agent loop.
 
-## 🎯 Philosophy
+## 🚀 Quick Start
 
-Each experiment explores:
-- **Composability** - How hooks can be combined for complex behaviors
-- **Performance** - Optimizing hook-based architectures
-- **Developer Experience** - Making advanced patterns accessible
-- **Real-world Applications** - Solving actual problems with hook patterns
+**New to hooks?** Start here:
+1. **[hooks/TUTORIAL.md](hooks/TUTORIAL.md)** - 5-minute mastery guide (read this first!)
+2. **`./hooks/QUICKSTART.sh`** - One-command setup
+3. **[hooks/SETUP.md](hooks/SETUP.md)** - Detailed installation guide
 
-## 🚀 Experiments
+## What are Cursor Hooks?
 
-### 🤖 AI/LLM Hooks
-Advanced hooks for AI and LLM workflows.
+Cursor hooks are shell scripts that integrate with Cursor's agent loop. They run before or after defined stages and can:
+- **Observe** agent behavior (logging, analytics)
+- **Control** agent actions (block dangerous commands, gate operations)
+- **Extend** functionality (format code, enhance prompts, add context)
 
-- **Agent Orchestration Hooks** - Chain multiple AI agents with hook-based workflows, enabling complex multi-agent systems
-- **Prompt Chaining Hooks** - Advanced prompt composition patterns that allow dynamic prompt transformation and chaining
-- **Streaming Response Hooks** - Real-time AI response handling with hooks for streaming APIs and progressive updates
+Hooks communicate with Cursor via JSON over stdio, allowing you to customize the agent's behavior.
 
-**Goals:**
-- Explore hook-based AI agent orchestration
-- Create reusable patterns for LLM integration
-- Build composable AI workflows
+## Setup
 
-**Location:** `hooks/ai-llm-hooks/`
-
----
-
-### 🐍 Advanced Python Hooks
-Cutting-edge Python hook patterns using decorators, async, and event-driven architectures.
-
-- **Decorator Hook Patterns** - Advanced decorator composition, chaining, and meta-programming patterns for hook-based architectures
-- **Async/Await Hooks** - Async context managers, coroutine hooks, and concurrent execution patterns
-- **FastAPI/Flask Middleware Hooks** - Request/response lifecycle hooks, authentication hooks, and middleware composition
-- **Signal & Event Hooks** - Event-driven patterns using Python signals, custom event systems, and observer patterns
-- **Plugin System Hooks** - Dynamic plugin loading, hook registration systems, and extensible architectures
-
-**Goals:**
-- Explore Python's decorator and metaprogramming capabilities
-- Build reusable hook patterns for async Python
-- Create composable middleware and plugin systems
-- Optimize performance with hook-based architectures
-
-**Location:** `hooks/python-hooks/`
-
----
-
-### 🔗 Webhook Orchestration
-Advanced webhook handling and event-driven architecture patterns.
-
-- **Event-Driven Architecture Hooks** - Complex event processing pipelines with hook-based composition
-- **Multi-Provider Webhook Hooks** - Unified webhook handling across multiple services (GitHub, Stripe, etc.)
-- **Webhook Retry & Circuit Breaker Hooks** - Resilient webhook patterns with automatic retries and circuit breakers
-
-**Goals:**
-- Build scalable webhook architectures
-- Create resilient webhook handling patterns
-- Explore event-driven composition with hooks
-
-**Location:** `hooks/webhook-hooks/`
-
----
-
-### 🔧 Git Automation Hooks
-Advanced git hooks for automation and developer experience.
-
-- **AI-Powered Commit Hooks** - LLM-assisted commit message generation and code review suggestions
-- **Advanced Pre-commit Hooks** - Multi-stage validation pipelines with parallel execution and caching
-- **Branch Protection Hooks** - Automated branch management, PR validation, and merge strategies
-
-**Goals:**
-- Automate git workflows with AI
-- Improve developer experience
-- Create intelligent git automation
-
-**Location:** `hooks/git-hooks/`
-
----
-
-### 🖥️ System-Level Hooks
-OS-level hooks and low-level system integration patterns.
-
-- **OS Event Hooks** - File system, process, and network monitoring hooks for system events
-- **IPC Hooks** - Inter-process communication patterns using hooks for message passing (multiprocessing, asyncio)
-- **Native Extension Hooks** - Bridge patterns between Python and native code using hook abstractions (Cython, C extensions)
-
-**Goals:**
-- Explore system-level hook patterns
-- Build OS integration abstractions
-- Create reusable system monitoring hooks
-
-**Location:** `hooks/system-hooks/`
-
-## 📦 Setup
-
-### Requirements
-- Python 3.10+
-- pip
-
-### Installation
+### 1. Copy hooks.json to your Cursor config directory
 
 ```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Copy the hooks.json file to your Cursor home directory
+cp hooks/hooks.json ~/.cursor/hooks.json
 
-# Install dependencies
-pip install -r requirements.txt
+# Copy the hooks scripts directory
+cp -r hooks/hooks ~/.cursor/hooks
 ```
 
-### Development
+### 2. Make scripts executable
 
 ```bash
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Format code
-black .
-
-# Lint code
-ruff check .
+chmod +x ~/.cursor/hooks/*.sh
 ```
 
-## 📁 Project Structure
+### 3. Restart Cursor
+
+Restart Cursor for the hooks to take effect. You can verify hooks are active in Cursor Settings → Hooks tab.
+
+## Available Hooks
+
+### 🔒 Security Hooks
+
+#### `security-check.sh` (beforeShellExecution)
+Blocks dangerous shell commands like `rm -rf /`, `format C:`, etc. Prevents accidental destructive operations.
+
+#### `redact-secrets.sh` (beforeReadFile)
+Prevents the agent from reading files containing API keys, tokens, or other secrets. Blocks access to sensitive files.
+
+#### `check-secrets.sh` (afterFileEdit)
+Scans edited files for potential secrets and logs warnings. Helps prevent accidental secret commits.
+
+### 📝 Code Quality Hooks
+
+#### `format-code.sh` (afterFileEdit)
+Automatically formats code after edits using appropriate formatters:
+- Python → `black`
+- JavaScript/TypeScript → `prettier`
+- Go → `gofmt`
+- Rust → `rustfmt`
+
+### 📊 Analytics & Logging Hooks
+
+#### `audit-shell.sh` (beforeShellExecution)
+Logs all shell commands executed by the agent with timestamps, conversation IDs, and working directories.
+
+#### `log-execution.sh` (afterShellExecution)
+Logs command execution results and output for debugging and analysis.
+
+#### `enhance-prompt.sh` (beforeSubmitPrompt)
+Logs all prompts submitted to the agent for analytics and can be extended to enhance prompts with context.
+
+#### `analyze-response.sh` (afterAgentResponse)
+Analyzes agent responses, counting code blocks, links, and response length.
+
+#### `finalize-session.sh` (stop)
+Logs session completion and can optionally trigger follow-up actions.
+
+## Hook Events
+
+The hooks are configured to run at these stages:
+
+- **beforeShellExecution** - Before any shell command runs
+- **afterShellExecution** - After shell commands complete
+- **afterFileEdit** - After files are edited
+- **beforeReadFile** - Before files are read
+- **beforeSubmitPrompt** - Before prompts are submitted
+- **afterAgentResponse** - After agent responses
+- **stop** - When agent loop ends
+
+## Log Files
+
+Hooks create log files in `~/.cursor/hooks/`:
+
+- `audit.log` - Shell command audit trail
+- `execution.log` - Command execution results
+- `format.log` - Code formatting actions
+- `secrets.log` - Secret detection warnings
+- `prompts.log` - Prompt analytics
+- `response-analysis.log` - Response analysis
+- `sessions.log` - Session tracking
+
+## Customization
+
+### Adding New Hooks
+
+1. Create a new shell script in `hooks/hooks/` directory
+2. Add it to `hooks/hooks.json` with the appropriate event
+3. Ensure the script reads JSON from stdin and outputs JSON to stdout
+4. Make it executable: `chmod +x hooks/hooks/your-hook.sh`
+
+### Modifying Existing Hooks
+
+Edit the shell scripts directly. They follow this pattern:
+
+```bash
+#!/bin/bash
+# Read JSON input
+input=$(cat)
+# Parse fields
+field=$(echo "$input" | jq -r '.field // empty')
+# Do something
+# Output JSON response (if needed)
+cat << EOF
+{
+  "permission": "allow"
+}
+EOF
+```
+
+## Examples
+
+### Block Git Commands
+
+Add to `security-check.sh`:
+
+```bash
+if [[ "$command" == git* ]]; then
+  cat << EOF
+{
+  "permission": "deny",
+  "user_message": "Git commands blocked. Use GitHub CLI instead."
+}
+EOF
+fi
+```
+
+### Auto-format on Save
+
+The `format-code.sh` hook already does this, but you can customize formatters or add linting:
+
+```bash
+# Add linting after formatting
+if [ -f "$file_path" ] && [[ "$file_path" == *.py ]]; then
+  pylint "$file_path" 2>/dev/null || true
+fi
+```
+
+### Enhanced Prompt Context
+
+Modify `enhance-prompt.sh` to add context:
+
+```bash
+# Add git context to prompts
+git_status=$(git status --short 2>/dev/null || echo "")
+enhanced_prompt="$prompt\n\nGit Status:\n$git_status"
+```
+
+## Project Structure
 
 ```
 cursor_experiments/
 ├── hooks/
-│   ├── ai-llm-hooks/       # AI/LLM hook experiments
-│   ├── python-hooks/        # Advanced Python hook patterns
-│   ├── webhook-hooks/       # Webhook orchestration
-│   ├── git-hooks/          # Git automation hooks
-│   └── system-hooks/       # System-level hooks
-├── requirements.txt         # Python dependencies
-├── pyproject.toml          # Project configuration
+│   ├── hooks/              # Shell script hooks
+│   │   ├── analyze-response.sh
+│   │   ├── audit-shell.sh
+│   │   ├── check-secrets.sh
+│   │   ├── enhance-prompt.sh
+│   │   ├── finalize-session.sh
+│   │   ├── format-code.sh
+│   │   ├── log-execution.sh
+│   │   ├── redact-secrets.sh
+│   │   └── security-check.sh
+│   ├── hooks.json          # Hook configuration
+│   ├── QUICKSTART.sh       # Quick setup script
+│   ├── README.md           # Detailed hooks documentation
+│   ├── SETUP.md            # Installation guide
+│   └── TUTORIAL.md         # 5-minute tutorial
 └── README.md               # This file
 ```
 
-## 🛠️ Technologies
+## Reference
 
-- **Python 3.10+** - Core language
-- **FastAPI** - Web framework for middleware hooks
-- **asyncio** - Async/await patterns
-- **OpenAI/Anthropic** - AI/LLM integrations
-- **GitPython** - Git automation
-- **watchdog** - File system monitoring
-- **psutil** - System utilities
+- [Cursor Hooks Documentation](https://cursor.com/docs/agent/hooks)
+- [Hook Events Reference](https://cursor.com/docs/agent/hooks#hook-events)
+- [Configuration Guide](https://cursor.com/docs/agent/hooks#configuration)
 
-## 📝 License
+## Philosophy
 
-MIT
-
-## 🤝 Contributing
-
-This is an experimental project exploring cutting-edge hook patterns. Feel free to explore, experiment, and push the boundaries!
+These hooks demonstrate:
+- **Security**: Protecting against dangerous operations
+- **Quality**: Ensuring code quality through formatting and linting
+- **Observability**: Logging and analytics for understanding agent behavior
+- **Extensibility**: Easy to customize and extend for your needs
